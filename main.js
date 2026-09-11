@@ -248,9 +248,9 @@
         if (sec) {
           const isActive = key === activeName;
           sec.style.pointerEvents = isActive ? "auto" : "none";
-          sec.style.zIndex = isActive ? "10" : "2";
+          sec.style.zIndex = isActive ? (key === "work" ? "30" : "10") : "2";
 
-          const interactiveElems = sec.querySelectorAll("a, button, .personal-sns__card, .marquee-card, .personal-sns__cards, .vertical-marquee");
+          const interactiveElems = sec.querySelectorAll("a, button, .personal-sns__card, .marquee-card, .personal-sns__cards, .vertical-marquee, .work-card, .work-card__link");
           interactiveElems.forEach((el) => {
             el.style.pointerEvents = isActive ? "auto" : "none";
           });
@@ -261,7 +261,25 @@
     function syncPersonalSnsInteraction() {
       const snsOpacity = Number(gsap.getProperty(personalSnsSection, "opacity")) || 0;
       const toolsOpacity = Number(gsap.getProperty(toolsSection, "opacity")) || 0;
+      const workOpacity = Number(gsap.getProperty(workSection, "opacity")) || 0;
       const label = typeof masterTimeline !== "undefined" && masterTimeline ? masterTimeline.currentLabel() : "";
+
+      if (label === "work" || label === "release" || workOpacity > 0.05) {
+        Object.keys(scenes).forEach((key) => {
+          const sec = scenes[key];
+          if (sec) {
+            const isWork = key === "work";
+            sec.style.pointerEvents = isWork ? "auto" : "none";
+            sec.style.zIndex = isWork ? "30" : "2";
+
+            const interactiveElems = sec.querySelectorAll("a, button, .personal-sns__card, .marquee-card, .personal-sns__cards, .vertical-marquee, .work-card, .work-card__link");
+            interactiveElems.forEach((el) => {
+              el.style.pointerEvents = isWork ? "auto" : "none";
+            });
+          }
+        });
+        return;
+      }
 
       if (label && scenes[label]) {
         activateScene(label);
@@ -279,7 +297,7 @@
           const toolsElems = toolsSection.querySelectorAll("a, button");
           toolsElems.forEach((el) => { el.style.pointerEvents = "none"; });
         }
-      } else if (label === "tools" || toolsOpacity > 0.08) {
+      } else if (label === "tools" || (toolsOpacity > 0.08 && workOpacity <= 0.05)) {
         personalSnsSection.style.pointerEvents = "none";
         personalSnsSection.style.zIndex = "2";
         const snsCards = personalSnsSection.querySelectorAll(".personal-sns__card, a, button");
@@ -1073,9 +1091,13 @@
       }, 450);
     }
 
+    modal.openModal = openModal;
+    modal.closeModal = closeModal;
+
     triggers.forEach((trigger) => {
       trigger.addEventListener("click", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         openModal();
         const targetId = trigger.getAttribute("data-sns-target");
         if (targetId) {
@@ -1123,6 +1145,31 @@
       "#marketing-menu-close",
       "[data-open-marketing-menu='true'], #open-marketing-menu-trigger"
     );
+
+    setupModalSystem(
+      "#about-connect-modal",
+      "#about-connect-backdrop",
+      ".about-connect-modal__panel",
+      "#about-connect-close",
+      "[data-open-about='true'], #open-about-trigger, .work-card--04, .work-card--04 *"
+    );
+
+    // Global fail-safe click delegation for ABOUT CONNECT modal trigger
+    document.addEventListener("click", (e) => {
+      const aboutTarget = e.target.closest("[data-open-about='true'], #open-about-trigger, .work-card--04, a[href='#about-connect-modal']");
+      if (aboutTarget) {
+        e.preventDefault();
+        e.stopPropagation();
+        const aboutModal = document.querySelector("#about-connect-modal");
+        if (aboutModal && typeof aboutModal.openModal === "function") {
+          aboutModal.openModal();
+        } else if (aboutModal) {
+          aboutModal.setAttribute("aria-hidden", "false");
+          aboutModal.classList.add("is-open");
+          document.body.style.overflow = "hidden";
+        }
+      }
+    });
   }
 
   function initApp() {
