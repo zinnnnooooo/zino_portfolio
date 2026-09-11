@@ -742,67 +742,139 @@
     if (window.__starlightCursorInitialized) return;
     window.__starlightCursorInitialized = true;
 
-    const cursor = document.querySelector("#starlight-cursor");
-    const trailContainer = document.querySelector("#starlight-trail-container");
-    const heroEl = document.querySelector("#hero");
-    if (!cursor || !trailContainer) return;
+    let cursor = document.querySelector("#starlight-cursor");
+    let trailContainer = document.querySelector("#starlight-trail-container");
 
-    const diamondEl = cursor.querySelector(".starlight-cursor__diamond svg");
+    const energyHTML = `
+      <div class="starlight-cursor__ring"></div>
+      <div class="starlight-cursor__core">
+        <div class="energy-diamond"></div>
+      </div>
+    `;
+
+    if (!cursor) {
+      cursor = document.createElement("div");
+      cursor.id = "starlight-cursor";
+      cursor.className = "starlight-cursor";
+      cursor.setAttribute("aria-hidden", "true");
+      cursor.innerHTML = energyHTML;
+      document.body.appendChild(cursor);
+    } else if (!cursor.querySelector(".starlight-cursor__ring")) {
+      cursor.innerHTML = energyHTML;
+    }
+
+    if (!trailContainer) {
+      trailContainer = document.createElement("div");
+      trailContainer.id = "starlight-trail-container";
+      trailContainer.className = "starlight-trail-container";
+      trailContainer.setAttribute("aria-hidden", "true");
+      document.body.appendChild(trailContainer);
+    }
 
     let targetX = -100;
     let targetY = -100;
     let currentX = -100;
     let currentY = -100;
-    let lastSparkX = -100;
-    let lastSparkY = -100;
-    let velocityX = 0;
-    let currentTilt = 0;
-    let targetTilt = 0;
     let isInitialized = false;
     let isHovered = false;
 
-    const LERP = 0.22;
-    const SPARK_DISTANCE = 11;
-    const MAX_TRAIL_SPARKS = 10;
-
-    const heroSparkColors = ["#FFFFFF", "#F0F5FF", "#DDE8FF"];
-    const heroSparkSizes = [5, 8, 11];
-    const shardSizes = [3, 5, 7];
-
-    function checkHeroTheme(x, y) {
-      if (!heroEl) return;
-      const rect = heroEl.getBoundingClientRect();
-      const heroOpacity = parseFloat(window.getComputedStyle(heroEl).opacity || "0");
-      const isOverHero = (
-        y >= rect.top &&
-        y <= rect.bottom &&
-        x >= rect.left &&
-        x <= rect.right &&
-        heroOpacity > 0.1
-      );
-      if (isOverHero) {
-        cursor.classList.add("starlight-cursor--hero");
-      } else {
-        cursor.classList.remove("starlight-cursor--hero");
-      }
-    }
+    const LERP = 0.28;
 
     function resetCursorStates() {
       isHovered = false;
       cursor.classList.remove("is-hover", "is-clicked");
     }
 
-    function clearTrails() {
-      if (trailContainer) trailContainer.innerHTML = "";
+    function spawnStreakTrail(x, y, dx, dy, speed) {
+      if (!trailContainer) return;
+      if (speed < 2) return;
+
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+      const streakLen = Math.min(65, speed * 2.4);
+
+      const streak = document.createElement("div");
+      streak.className = "energy-trail-streak";
+      streak.style.width = streakLen + "px";
+      streak.style.setProperty("--tx", x + "px");
+      streak.style.setProperty("--ty", y + "px");
+      streak.style.setProperty("--angle", (angle + 180) + "deg");
+      streak.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${angle + 180}deg)`;
+
+      trailContainer.appendChild(streak);
+
+      setTimeout(() => {
+        if (streak.parentNode) streak.remove();
+      }, 320);
+
+      // Fast move gold shards
+      if (speed > 10 && Math.random() < 0.65) {
+        spawnGoldShard(x, y, angle);
+      }
+    }
+
+    function spawnGoldShard(x, y, baseAngle) {
+      if (!trailContainer) return;
+      const shard = document.createElement("div");
+      shard.className = "energy-gold-shard";
+
+      const spreadAngle = (baseAngle + 180 + (Math.random() * 60 - 30)) * (Math.PI / 180);
+      const dist = 12 + Math.random() * 24;
+      const endX = x + Math.cos(spreadAngle) * dist;
+      const endY = y + Math.sin(spreadAngle) * dist;
+
+      shard.style.setProperty("--sx", x + "px");
+      shard.style.setProperty("--sy", y + "px");
+      shard.style.setProperty("--ex", endX + "px");
+      shard.style.setProperty("--ey", endY + "px");
+
+      trailContainer.appendChild(shard);
+
+      setTimeout(() => {
+        if (shard.parentNode) shard.remove();
+      }, 400);
+    }
+
+    function triggerClickBurst(x, y) {
+      if (!trailContainer) return;
+
+      // 1. Ripple
+      const ripple = document.createElement("div");
+      ripple.className = "energy-click-ripple";
+      ripple.style.setProperty("--rx", x + "px");
+      ripple.style.setProperty("--ry", y + "px");
+      trailContainer.appendChild(ripple);
+
+      setTimeout(() => {
+        if (ripple.parentNode) ripple.remove();
+      }, 420);
+
+      // 2. Gold Diamond Shard Burst
+      const count = 8;
+      for (let i = 0; i < count; i++) {
+        const rad = (i * (360 / count) + (Math.random() * 20 - 10)) * (Math.PI / 180);
+        const dist = 20 + Math.random() * 25;
+        const endX = x + Math.cos(rad) * dist;
+        const endY = y + Math.sin(rad) * dist;
+
+        const shard = document.createElement("div");
+        shard.className = "energy-gold-shard";
+        shard.style.setProperty("--sx", x + "px");
+        shard.style.setProperty("--sy", y + "px");
+        shard.style.setProperty("--ex", endX + "px");
+        shard.style.setProperty("--ey", endY + "px");
+        trailContainer.appendChild(shard);
+
+        setTimeout(() => {
+          if (shard.parentNode) shard.remove();
+        }, 400);
+      }
     }
 
     function onMouseMove(e) {
       const prevX = targetX;
+      const prevY = targetY;
       targetX = e.clientX;
       targetY = e.clientY;
-      velocityX = targetX - prevX;
-
-      targetTilt = Math.max(-8, Math.min(8, velocityX * 0.4));
 
       if (!isInitialized) {
         currentX = targetX;
@@ -812,89 +884,12 @@
       }
 
       cursor.classList.remove("is-hidden");
-      checkHeroTheme(targetX, targetY);
 
-      const dx = targetX - lastSparkX;
-      const dy = targetY - lastSparkY;
-      const dist = Math.hypot(dx, dy);
+      const dx = targetX - prevX;
+      const dy = targetY - prevY;
+      const speed = Math.hypot(dx, dy);
 
-      if (dist > SPARK_DISTANCE) {
-        spawnSpark(targetX, targetY);
-        lastSparkX = targetX;
-        lastSparkY = targetY;
-      }
-    }
-
-    function spawnSpark(x, y, isBurst = false, burstAngle = null, burstDist = 0) {
-      if (trailContainer.children.length >= MAX_TRAIL_SPARKS && !isBurst) {
-        if (trailContainer.firstElementChild) {
-          trailContainer.firstElementChild.remove();
-        }
-      }
-
-      const spark = document.createElement("div");
-      const isHero = cursor.classList.contains("starlight-cursor--hero");
-
-      if (isHero) {
-        const isStar = Math.random() < 0.70;
-        const size = heroSparkSizes[Math.floor(Math.random() * heroSparkSizes.length)];
-        const color = heroSparkColors[Math.floor(Math.random() * heroSparkColors.length)];
-
-        if (!isStar) {
-          spark.className = "starlight-spark starlight-spark--dot starlight-spark--hero";
-          spark.style.width = size + "px";
-          spark.style.height = size + "px";
-          spark.style.backgroundColor = color;
-        } else {
-          spark.className = "starlight-spark starlight-spark--star starlight-spark--hero";
-          spark.textContent = Math.random() < 0.5 ? "✦" : "✧";
-          spark.style.fontSize = size + "px";
-          spark.style.color = color;
-        }
-      } else {
-        const size = shardSizes[Math.floor(Math.random() * shardSizes.length)];
-        const shapeType = Math.random() < 0.6 ? "starlight-spark--shard-diamond" : "starlight-spark--shard-polygon";
-        spark.className = `starlight-spark starlight-spark--shard ${shapeType}`;
-        spark.style.width = size + "px";
-        spark.style.height = (size * 1.3) + "px";
-        const rot = Math.floor(Math.random() * 360);
-        spark.style.setProperty("--srot", rot + "deg");
-      }
-
-      let posX = x;
-      let posY = y;
-
-      if (isBurst && burstAngle !== null) {
-        posX += Math.cos(burstAngle) * burstDist;
-        posY += Math.sin(burstAngle) * burstDist;
-      } else {
-        const offsetX = (Math.random() - 0.5) * 10;
-        const offsetY = (Math.random() - 0.5) * 10;
-        posX += offsetX;
-        posY += offsetY;
-      }
-
-      spark.style.setProperty("--sx", posX + "px");
-      spark.style.setProperty("--sy", posY + "px");
-
-      trailContainer.appendChild(spark);
-
-      setTimeout(() => {
-        if (spark.parentNode) spark.remove();
-      }, isBurst ? 450 : 550);
-    }
-
-    function triggerClickBurst(x, y) {
-      const isHero = cursor.classList.contains("starlight-cursor--hero");
-      const count = isHero ? 6 : 4;
-      const step = 360 / count;
-
-      for (let i = 0; i < count; i++) {
-        const deg = i * step + (Math.random() * 15 - 7.5);
-        const rad = (deg * Math.PI) / 180;
-        const dist = 16 + Math.random() * 10;
-        spawnSpark(x, y, true, rad, dist);
-      }
+      spawnStreakTrail(targetX, targetY, dx, dy, speed);
     }
 
     function render() {
@@ -902,20 +897,11 @@
         currentX += (targetX - currentX) * LERP;
         currentY += (targetY - currentY) * LERP;
         cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-
-        targetTilt += (0 - targetTilt) * 0.08;
-        currentTilt += (targetTilt - currentTilt) * 0.15;
-        if (diamondEl) {
-          diamondEl.style.transform = `rotate(${currentTilt.toFixed(2)}deg)`;
-        }
       }
       cursorRafId = requestAnimationFrame(render);
     }
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("scroll", () => {
-      if (isInitialized) checkHeroTheme(targetX, targetY);
-    }, { passive: true });
 
     document.addEventListener("mouseleave", () => {
       cursor.classList.add("is-hidden");
@@ -926,28 +912,24 @@
       cursor.classList.remove("is-hidden");
       targetX = e.clientX;
       targetY = e.clientY;
-    });    window.addEventListener("blur", () => {
+    });
+
+    window.addEventListener("blur", () => {
       cursor.classList.add("is-hidden");
       resetCursorStates();
-      clearTrails();
     });
 
     window.addEventListener("focus", () => {
       cursor.classList.remove("is-hidden");
     });
 
-    const interactiveSelectors = "a, button, [role='button'], input, label, select, .marquee-card, .tools-item, .work-card__link, .notify-card, .intro__card, .project-archive__item, .project-archive__btn, .project-archive-modal__close";
+    const interactiveSelectors = "a, button, [role='button'], input, label, select, .marquee-card, .tools-item, .work-card__link, .notify-card, .intro__card, .project-archive__item, .project-archive__btn, .project-archive-modal__close, .marketing-menu__item, .marketing-menu-modal__close";
 
     document.addEventListener("mouseover", (e) => {
       if (e.target.closest(interactiveSelectors)) {
         if (!isHovered) {
           isHovered = true;
           cursor.classList.add("is-hover");
-          const count = Math.floor(Math.random() * 2) + 2;
-          for (let i = 0; i < count; i++) {
-            const rad = Math.random() * Math.PI * 2;
-            spawnSpark(targetX, targetY, true, rad, 10 + Math.random() * 8);
-          }
         }
       }
     }, { passive: true });
@@ -964,10 +946,10 @@
 
     document.addEventListener("mousedown", (e) => {
       cursor.classList.add("is-clicked");
-      triggerClickBurst(targetX, targetY);
+      triggerClickBurst(e.clientX, e.clientY);
       setTimeout(() => {
         cursor.classList.remove("is-clicked");
-      }, 400);
+      }, 250);
     }, { passive: true });
 
     if (cursorRafId) cancelAnimationFrame(cursorRafId);

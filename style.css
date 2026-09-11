@@ -3309,7 +3309,7 @@ main {
 }
 
 /* ==========================================================================
-   9. STARLIGHT CUSTOM CURSOR SYSTEM
+   9. SIGNATURE ENERGY CUSTOM CURSOR SYSTEM (PERFECT CIRCLE FIX)
    ========================================================================== */
 body.cursor-enabled,
 body.cursor-enabled a,
@@ -3317,7 +3317,13 @@ body.cursor-enabled button,
 body.cursor-enabled [role="button"],
 body.cursor-enabled input,
 body.cursor-enabled label,
-body.cursor-enabled select {
+body.cursor-enabled select,
+body.cursor-enabled .marquee-card,
+body.cursor-enabled .work-card__link,
+body.cursor-enabled .notify-card,
+body.cursor-enabled .project-archive__item,
+body.cursor-enabled .project-archive__btn,
+body.cursor-enabled .marketing-menu__item {
   cursor: none !important;
 }
 
@@ -3325,10 +3331,10 @@ body.cursor-enabled select {
   position: fixed;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
-  margin-top: -15px;
-  margin-left: -15px;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  margin-left: -16px;
   pointer-events: none;
   z-index: 99999;
   display: none;
@@ -3347,176 +3353,87 @@ body.cursor-enabled .starlight-cursor {
   display: flex;
 }
 
-/* Halo behind Star (Active in Hero Mode) */
-.starlight-cursor__halo {
+/* Perfect Outer Circle Ring */
+.starlight-cursor__ring {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 40px;
-  height: 40px;
-  margin-top: -20px;
-  margin-left: -20px;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  margin-left: -16px;
   border-radius: 50%;
+  border: 1.5px solid #FF9A8B;
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(221, 232, 255, 0.14) 50%,
-    transparent 100%
+    rgba(255, 154, 139, 0.14) 0%,
+    rgba(255, 142, 114, 0.04) 100%
   );
-  filter: blur(4px);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.starlight-cursor.starlight-cursor--hero .starlight-cursor__halo {
-  opacity: 0.45;
-}
-
-/* 1. HERO STAR CURSOR */
-.starlight-cursor__star {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  filter:
-    drop-shadow(0 0 1px rgba(100, 110, 130, 0.2))
-    drop-shadow(0 0 3px rgba(255, 255, 255, 1))
-    drop-shadow(0 0 8px rgba(221, 232, 255, 0.90))
-    drop-shadow(0 0 16px rgba(185, 210, 255, 0.55))
-    drop-shadow(0 0 24px rgba(185, 210, 255, 0.25));
-  animation: starlightBreathing 2.0s ease-in-out infinite alternate;
-  transition: opacity 0.35s ease, transform 0.25s var(--ease), filter 0.35s ease;
-}
-
-.starlight-cursor.starlight-cursor--hero .starlight-cursor__star {
-  opacity: 1;
-}
-
-.starlight-cursor__star svg {
-  width: 30px;
-  height: 30px;
-  display: block;
-  overflow: visible;
-}
-
-.starlight-cursor__star .star-ray-h {
-  stroke: url(#ray-h-grad-hero);
-}
-.starlight-cursor__star .star-ray-v {
-  stroke: url(#ray-v-grad-hero);
-}
-.starlight-cursor__star .star-outer,
-.starlight-cursor__star .star-core,
-.starlight-cursor__star .star-center {
-  fill: #FFFFFF;
-}
-
-/* 2. GLASS DIAMOND CURSOR (HERO BELOW / LIGHT SECTION) */
-.starlight-cursor__diamond {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  pointer-events: none;
-  filter:
-    drop-shadow(0 0 1px rgba(80, 90, 110, 0.35))
-    drop-shadow(0 0 6px rgba(170, 195, 255, 0.42))
-    drop-shadow(0 0 16px rgba(210, 195, 255, 0.22));
-  transition: opacity 0.35s ease, transform 0.25s var(--ease), filter 0.35s ease;
+  box-shadow:
+    0 0 8px rgba(255, 154, 139, 0.65),
+    0 0 16px rgba(255, 142, 114, 0.35);
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
   will-change: transform;
 }
 
-.starlight-cursor.starlight-cursor--hero .starlight-cursor__diamond {
-  opacity: 0;
+/* Center Gold Diamond Core (Always Centered) */
+.starlight-cursor__core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  margin-left: -5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
-.starlight-cursor__diamond svg {
-  width: 24px;
-  height: 30px;
-  display: block;
-  overflow: visible;
-  transition: transform 0.25s var(--ease);
+.energy-diamond {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #FFF099 0%, #FFD700 50%, #FF9900 100%);
+  transform: rotate(45deg);
+  box-shadow:
+    0 0 6px rgba(255, 215, 0, 0.95),
+    0 0 12px rgba(255, 153, 0, 0.6);
+  border-radius: 1px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 
-.starlight-cursor__diamond .diamond-center {
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+/* Hover State: Uniform Circle Expansion (~48px scale: 32px * 1.5 = 48px) */
+.starlight-cursor.is-hover .starlight-cursor__ring {
+  transform: scale(1.5);
+  border-color: #FF8E72;
+  box-shadow:
+    0 0 12px rgba(255, 154, 139, 0.95),
+    0 0 24px rgba(255, 142, 114, 0.65);
 }
 
-@keyframes starlightBreathing {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
-    filter:
-      brightness(1.15)
-      drop-shadow(0 0 1px rgba(100, 110, 130, 0.2))
-      drop-shadow(0 0 4px rgba(255, 255, 255, 1))
-      drop-shadow(0 0 10px rgba(221, 232, 255, 0.95))
-      drop-shadow(0 0 18px rgba(185, 210, 255, 0.65))
-      drop-shadow(0 0 28px rgba(185, 210, 255, 0.30));
-  }
-  100% {
-    transform: scale(1);
-  }
+.starlight-cursor.is-hover .energy-diamond {
+  transform: rotate(45deg) scale(1.15);
+  box-shadow:
+    0 0 10px rgba(255, 215, 0, 1),
+    0 0 18px rgba(255, 153, 0, 0.85);
 }
 
-/* Interactive Hover State */
-.starlight-cursor.is-hover .starlight-cursor__star {
-  transform: scale(1.333) rotate(10deg);
-  filter:
-    brightness(1.2)
-    drop-shadow(0 0 1px rgba(100, 110, 130, 0.25))
-    drop-shadow(0 0 5px rgba(255, 255, 255, 1))
-    drop-shadow(0 0 12px rgba(221, 232, 255, 1))
-    drop-shadow(0 0 22px rgba(185, 210, 255, 0.80))
-    drop-shadow(0 0 32px rgba(185, 210, 255, 0.40));
+/* Click Active State (Uniform scale 1 -> 0.7 -> 1) */
+.starlight-cursor.is-clicked .starlight-cursor__ring {
+  animation: circleContract 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-.starlight-cursor.is-hover .starlight-cursor__diamond {
-  transform: scale(1.333);
-  filter:
-    brightness(1.18)
-    drop-shadow(0 0 1px rgba(80, 90, 110, 0.50))
-    drop-shadow(0 0 8px rgba(170, 195, 255, 0.65))
-    drop-shadow(0 0 20px rgba(210, 195, 255, 0.38));
-}
-
-.starlight-cursor.is-hover .starlight-cursor__diamond svg {
-  transform: rotate(8deg);
-}
-
-.starlight-cursor.is-hover .starlight-cursor__halo {
-  transform: scale(1.3);
-  opacity: 0.7;
-}
-
-/* Click Active State */
-.starlight-cursor.is-clicked .starlight-cursor__star,
-.starlight-cursor.is-clicked .starlight-cursor__diamond {
-  animation: starlightClickPulse 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-@keyframes starlightClickPulse {
+@keyframes circleContract {
   0% { transform: scale(1); }
-  25% { transform: scale(0.75); }
-  65% { transform: scale(1.15); }
+  35% { transform: scale(0.7); }
   100% { transform: scale(1); }
 }
 
-/* Spark Trail Container */
+/* Trail & Particle Layer */
 .starlight-trail-container {
   position: fixed;
   inset: 0;
@@ -3525,79 +3442,117 @@ body.cursor-enabled .starlight-cursor {
   overflow: hidden;
 }
 
-.starlight-spark {
+/* Peach Light Ribbon Streak */
+.energy-trail-streak {
   position: absolute;
   top: 0;
   left: 0;
+  height: 2.5px;
+  border-radius: 1.5px;
+  background: linear-gradient(90deg, rgba(255, 154, 139, 0.95), rgba(255, 177, 153, 0.4), transparent);
+  box-shadow: 0 0 6px rgba(255, 154, 139, 0.8);
+  transform-origin: left center;
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  font-family: inherit;
   will-change: transform, opacity;
-  animation: sparkFade 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: streakFade 0.32s ease-out forwards;
 }
 
-.starlight-spark--hero {
-  filter:
-    drop-shadow(0 0 5px rgba(255, 255, 255, 0.95))
-    drop-shadow(0 0 9px rgba(221, 232, 255, 0.65));
-}
-
-.starlight-spark--shard {
-  border: 1px solid rgba(90, 105, 130, 0.30);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(210, 225, 255, 0.35));
-  box-shadow:
-    inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.9),
-    0 0 6px rgba(150, 180, 255, 0.55);
-  transform-origin: center;
-}
-
-.starlight-spark--shard-diamond {
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-}
-
-.starlight-spark--shard-polygon {
-  clip-path: polygon(30% 0%, 100% 30%, 70% 100%, 0% 70%);
-}
-
-.starlight-spark--dot {
-  border-radius: 50%;
-  background: #FFFFFF;
-  box-shadow:
-    0 0 4px rgba(255, 255, 255, 0.95),
-    0 0 8px rgba(170, 195, 255, 0.65);
-}
-
-@keyframes sparkFade {
+@keyframes streakFade {
   0% {
-    opacity: 1;
-    transform: translate3d(var(--sx), var(--sy), 0) scale(1) rotate(0deg);
+    opacity: 0.9;
   }
   100% {
     opacity: 0;
-    transform: translate3d(var(--sx), var(--sy), 0) scale(0.2) rotate(45deg);
+    transform: translate3d(var(--tx), var(--ty), 0) rotate(var(--angle)) scaleX(0.2);
   }
 }
 
-@media (pointer: coarse) {
+/* Gold Shard Particle */
+.energy-gold-shard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(135deg, #FFF5B8, #FFD700);
+  transform: rotate(45deg);
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.9);
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: shardFly 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes shardFly {
+  0% {
+    opacity: 1;
+    transform: translate3d(var(--sx), var(--sy), 0) scale(1) rotate(45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--ex), var(--ey), 0) scale(0.2) rotate(225deg);
+  }
+}
+
+/* Click Ripple Wave */
+.energy-click-ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  margin-left: -16px;
+  border-radius: 50%;
+  border: 1.5px solid #FF9A8B;
+  box-shadow:
+    0 0 12px rgba(255, 154, 139, 0.8),
+    0 0 24px rgba(255, 215, 0, 0.4);
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: energyRippleAnim 0.42s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes energyRippleAnim {
+  0% {
+    transform: translate3d(var(--rx), var(--ry), 0) scale(0.6);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate3d(var(--rx), var(--ry), 0) scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Mobile & Touch Environment Disabling */
+@media (pointer: coarse), (hover: none) {
   body.cursor-enabled,
   body.cursor-enabled a,
-  body.cursor-enabled button {
+  body.cursor-enabled button,
+  body.cursor-enabled [role="button"],
+  body.cursor-enabled input,
+  body.cursor-enabled label,
+  body.cursor-enabled select,
+  body.cursor-enabled * {
     cursor: auto !important;
   }
   .starlight-cursor,
-  .starlight-trail-container {
+  .starlight-trail-container,
+  .energy-click-ripple,
+  .energy-gold-shard,
+  .energy-trail-streak {
     display: none !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .starlight-cursor__star {
+  .orbit-arc {
     animation: none !important;
   }
-  .starlight-spark {
+  .starlight-cursor__orbit,
+  .starlight-cursor__dot {
+    transition-duration: 0.05s !important;
+  }
+  .cursor-ripple {
     animation-duration: 0.1s !important;
   }
 }
@@ -4074,7 +4029,7 @@ body.cursor-enabled .starlight-cursor {
 .project-archive__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 13px 14px;
+  gap: 12px;
 }
 
 .project-archive__btn {
