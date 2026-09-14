@@ -255,6 +255,7 @@
     }
 
     function syncPersonalSnsInteraction() {
+      const introOpacity = Number(gsap.getProperty(introSection, "opacity")) || 0;
       const snsOpacity = Number(gsap.getProperty(personalSnsSection, "opacity")) || 0;
       const toolsOpacity = Number(gsap.getProperty(toolsSection, "opacity")) || 0;
       const workOpacity = Number(gsap.getProperty(workSection, "opacity")) || 0;
@@ -281,7 +282,34 @@
         activateScene(label);
       }
 
-      if (snsOpacity > 0.05) {
+      // Intro -> Personal SNS interaction refinement (Opacity-based priority)
+      if (introOpacity > 0.05) {
+        introSection.style.pointerEvents = "auto";
+        introSection.style.zIndex = "20";
+
+        const introElems = introSection.querySelectorAll(".vertical-marquee, .marquee-column, .marquee-track, .marquee-card, a, button");
+        introElems.forEach((el) => {
+          el.style.pointerEvents = "auto";
+        });
+
+        if (snsOpacity < 0.95) {
+          personalSnsSection.style.pointerEvents = "none";
+          personalSnsSection.style.zIndex = "2";
+          const snsCards = personalSnsSection.querySelectorAll(".personal-sns__card, a, button");
+          snsCards.forEach((el) => { el.style.pointerEvents = "none"; });
+        }
+      } else {
+        introSection.style.pointerEvents = "none";
+        introSection.style.zIndex = "2";
+
+        const introElems = introSection.querySelectorAll(".vertical-marquee, .marquee-column, .marquee-track, .marquee-card, a, button");
+        introElems.forEach((el) => {
+          el.style.pointerEvents = "none";
+        });
+      }
+
+      // Personal SNS -> Tools interaction refinement
+      if (snsOpacity > 0.05 && introOpacity <= 0.05) {
         personalSnsSection.style.pointerEvents = "auto";
         personalSnsSection.style.zIndex = "10";
         const snsCards = personalSnsSection.querySelectorAll(".personal-sns__card, a, button");
