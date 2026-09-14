@@ -179,10 +179,6 @@
 
     const aboutHeader = aboutProfileSection.querySelector(".about-profile__header");
     const aboutIntroCopy = aboutProfileSection.querySelector(".about-profile__intro-copy");
-    const aboutNameKrInner = Array.from(aboutProfileSection.querySelectorAll(".about-profile__name-kr span"));
-    const aboutNameEn = aboutProfileSection.querySelector(".about-profile__name-en");
-    const aboutTitleEnInner = Array.from(aboutProfileSection.querySelectorAll(".about-profile__title-en span"));
-    const aboutLocationEn = aboutProfileSection.querySelector(".about-profile__location-en");
     const aboutProfileRow = aboutProfileSection.querySelector(".about-profile__profile-row");
     const aboutJourneySection = aboutProfileSection.querySelector(".about-profile__journey-section");
     const aboutTimelineTrackFill = aboutProfileSection.querySelector(".timeline-track__fill");
@@ -409,10 +405,6 @@
       });
       if (aboutHeader) gsap.set(aboutHeader, { opacity: 0, y: 15 });
       if (aboutIntroCopy) gsap.set(aboutIntroCopy, { opacity: 0, y: 15 });
-      if (aboutNameKrInner.length) gsap.set(aboutNameKrInner, { y: "110%", opacity: 0 });
-      if (aboutNameEn) gsap.set(aboutNameEn, { opacity: 0, y: 10 });
-      if (aboutTitleEnInner.length) gsap.set(aboutTitleEnInner, { y: "110%", opacity: 0 });
-      if (aboutLocationEn) gsap.set(aboutLocationEn, { opacity: 0, y: 10 });
       if (aboutProfileRow) gsap.set(aboutProfileRow, { opacity: 0, y: 18 });
       if (aboutJourneySection) gsap.set(aboutJourneySection, { opacity: 0, y: 22 });
       if (aboutTimelineTrackFill) gsap.set(aboutTimelineTrackFill, { scaleX: 0, transformOrigin: "left center" });
@@ -604,10 +596,6 @@
         .to(sparkleBg, { "--sparkle-color-main": "#4A63E0", "--sparkle-color-sec": "#9B72CF", "--glow-color": "rgba(74, 99, 224, 0.04)", "--aurora-color": "rgba(120, 100, 240, 0.075)", "--aurora-color-2": "rgba(185, 140, 235, 0.045)", "--aurora-pos-1": "35% 25%", "--aurora-pos-2": "65% 75%", duration: 0.35, ease: "power2.out" }, "<")
         .to(aboutHeader, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, "-=0.5")
         .to(aboutIntroCopy, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, "-=0.35")
-        .to(aboutNameKrInner, { y: "0%", opacity: 1, duration: 0.65, stagger: 0.08, ease: "power3.out" }, "-=0.3")
-        .to(aboutNameEn, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, "-=0.4")
-        .to(aboutTitleEnInner, { y: "0%", opacity: 1, duration: 0.65, stagger: 0.1, ease: "power3.out" }, "-=0.5")
-        .to(aboutLocationEn, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, "-=0.4")
         .to(aboutProfileRow, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, "-=0.3")
         .to(aboutJourneySection, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, "-=0.3")
         .to(aboutTimelineTrackFill, { scaleX: 1, duration: 0.5, ease: "power2.out" }, "-=0.25")

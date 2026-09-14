@@ -820,25 +820,8 @@ main {
 /* ==========================================================================
    ABOUT / PROFILE SECTION
    ========================================================================== */
-.about-profile {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 60px var(--page-padding);
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(30px);
-  will-change: opacity, transform;
-}
-
 /* ==========================================================================
-   ABOUT / PROFILE SECTION (LAYOUT: TOP LEFT TITLE + BOTTOM 2 GLASS CARDS)
+   ABOUT / PROFILE SECTION (RESTORED TOP HEADER & PRECISION BOTTOM CARDS)
    ========================================================================== */
 .about-profile {
   position: absolute;
@@ -853,6 +836,7 @@ main {
   opacity: 0;
   transform: translateY(30px);
   will-change: opacity, transform;
+  z-index: 5;
 }
 
 .about-profile__inner {
@@ -869,7 +853,7 @@ main {
   z-index: 20;
 }
 
-/* TOP CENTER INTRO LABEL, TITLE & DESCRIPTION */
+/* TOP CENTER INTRO LABEL, TITLE & DESCRIPTION (RESTORED EXACT ORIGINAL DESIGN) */
 .about-profile__label,
 .about-profile__header {
   display: inline-block;
@@ -909,10 +893,10 @@ main {
   will-change: opacity, transform;
 }
 
-/* BOTTOM ROW: 2 EQUAL GLASS CARDS SIDE-BY-SIDE */
+/* BOTTOM ROW: 40% PROFILE CARD : 60% CAREER JOURNEY CARD */
 .about-profile__bottom {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: calc(40% - 11px) calc(60% - 11px);
   gap: 22px;
   width: 100%;
   max-width: 1180px;
@@ -923,42 +907,49 @@ main {
   pointer-events: auto;
 }
 
-/* GLASS CARD BASE STYLES - IDENTICAL SIZING & GLASS STYLE */
+/* GLASS CARD BASE STYLES */
 .about-profile__card {
   position: relative;
   width: 100%;
-  height: 176px;
-  padding: 26px 30px;
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  height: 208px;
+  padding: 30px 28px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.60);
   box-shadow:
-    0 12px 36px rgba(35, 45, 75, 0.05),
-    0 2px 10px rgba(99, 102, 241, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    inset 0 1px 0 rgba(255, 255, 255, 0.80),
+    0 12px 32px rgba(40, 50, 80, 0.04);
   display: flex;
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
   text-align: left;
   transition:
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.4s ease,
-    box-shadow 0.4s ease,
-    background-color 0.4s ease;
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* PROFILE CARD HOVER ONLY: translateY(-2px), border highlight, glass highlight increase */
 @media (hover: hover) and (pointer: fine) {
-  .about-profile__card:hover {
-    transform: translateY(-3px);
-    background: rgba(255, 255, 255, 0.82);
-    border-color: rgba(99, 102, 241, 0.35);
+  .about-profile__card--info:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.48);
+    border-color: rgba(255, 255, 255, 0.85);
     box-shadow:
-      0 18px 40px rgba(99, 102, 241, 0.13),
-      0 4px 16px rgba(120, 150, 235, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 1);
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 16px 36px rgba(40, 50, 80, 0.055);
+  }
+
+  /* CAREER JOURNEY CARD CONTAINER DOES NOT MOVE */
+  .about-profile__card--career:hover {
+    transform: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.80),
+      0 12px 32px rgba(40, 50, 80, 0.04);
   }
 }
 
@@ -966,29 +957,33 @@ main {
 .about-profile__info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px 24px;
+  gap: 22px 24px;
+  height: 100%;
+  align-content: center;
 }
 
 .about-profile__info-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  justify-content: center;
 }
 
 .about-profile__info-item .info-label {
   font-family: "Inter", var(--font-base);
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.1em;
-  color: var(--text-tertiary, #a4a4a6);
+  color: #94a3b8;
   text-transform: uppercase;
 }
 
 .about-profile__info-item .info-value {
   font-size: 15.5px;
-  font-weight: 700;
+  font-weight: 550;
   letter-spacing: -0.015em;
-  color: var(--text-primary, #16161a);
+  color: #1e293b;
+  line-height: 1.3;
 }
 
 .about-profile__info-item .info-value--link {
@@ -1017,47 +1012,48 @@ main {
 .about-profile__card--career {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 24px 28px;
+  justify-content: center;
+  padding: 30px 28px;
 }
 
 .journey-header-wrap {
   display: flex;
   align-items: center;
-  margin-bottom: 4px;
+  margin-bottom: 14px;
 }
 
 .journey-title {
   font-family: "Inter", var(--font-base);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.12em;
-  color: var(--text-secondary, #7a7a7d);
+  color: #64748b;
   text-transform: uppercase;
 }
 
 .about-profile__timeline-wrapper {
   position: relative;
   width: 100%;
-  padding: 4px 0 0;
+  padding: 2px 0 0;
 }
 
-/* Horizontal Progress Line Track (Exact Center Connection from Dot 1 Center to Dot 3 Center) */
+/* TIMELINE TRACK LINE (1px Thin Line, Starts Dot 1 Center 16.66667% to Dot 3 Center 83.33333%) */
 .timeline-track {
   position: absolute;
-  top: 39px;
+  top: 36px;
   left: 16.66667%;
   right: 16.66667%;
-  height: 2px;
+  height: 1px;
   transform: translateY(-50%);
   z-index: 1;
+  pointer-events: none;
 }
 
 .timeline-track__bg {
   position: absolute;
   inset: 0;
-  background: rgba(99, 102, 241, 0.14);
-  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.14) 0%, rgba(139, 92, 246, 0.14) 50%, rgba(168, 85, 247, 0.14) 100%);
+  height: 1px;
 }
 
 .timeline-track__fill {
@@ -1066,8 +1062,7 @@ main {
   left: 0;
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
-  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.85) 0%, rgba(139, 92, 246, 0.85) 50%, rgba(168, 85, 247, 0.85) 100%);
   transform-origin: left center;
   transform: scaleX(1);
   will-change: transform;
@@ -1083,7 +1078,7 @@ main {
   width: 100%;
 }
 
-/* Individual Career Point Container */
+/* TIMELINE COLUMN ITEM */
 .timeline-col {
   display: flex;
   flex-direction: column;
@@ -1092,12 +1087,11 @@ main {
   position: relative;
   will-change: opacity, transform;
   cursor: pointer;
-  padding: 6px 4px;
-  border-radius: 16px;
+  padding: 4px 6px;
+  border-radius: 14px;
   transition:
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .timeline-point-header {
@@ -1108,33 +1102,14 @@ main {
   position: relative;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .timeline-col:hover {
-    transform: translateY(-5px) scale(1.025);
-    background: rgba(245, 247, 255, 0.55);
-    box-shadow:
-      0 8px 24px rgba(99, 102, 241, 0.12),
-      0 2px 10px rgba(139, 92, 246, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  }
-
-  .about-profile__card--career:hover {
-    transform: none;
-    box-shadow:
-      0 12px 36px rgba(35, 45, 75, 0.05),
-      0 2px 10px rgba(99, 102, 241, 0.03),
-      inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  }
-}
-
 .timeline-period {
   font-family: "Inter", var(--font-base);
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-secondary, #7a7a7d);
+  color: #64748b;
   white-space: nowrap;
-  line-height: 14px;
-  height: 14px;
+  line-height: 16px;
+  height: 16px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -1149,18 +1124,21 @@ main {
   justify-content: center;
   height: 14px;
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   position: relative;
   z-index: 3;
 }
 
 .timeline-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, background-color 0.35s ease;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.4s ease;
   flex-shrink: 0;
   position: relative;
   z-index: 4;
@@ -1168,27 +1146,12 @@ main {
 
 .timeline-col--exp1 .timeline-dot {
   background: #7c3aed;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.14);
 }
 
 .timeline-col--exp2 .timeline-dot {
   background: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .timeline-col:hover .timeline-dot {
-    transform: scale(1.35);
-    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.28), 0 0 14px rgba(99, 102, 241, 0.6);
-  }
-
-  .timeline-col--exp1:hover .timeline-dot {
-    box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.28), 0 0 14px rgba(124, 58, 237, 0.6);
-  }
-
-  .timeline-col--exp2:hover .timeline-dot {
-    box-shadow: 0 0 0 5px rgba(139, 92, 246, 0.28), 0 0 14px rgba(139, 92, 246, 0.6);
-  }
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.14);
 }
 
 .timeline-content {
@@ -1199,79 +1162,163 @@ main {
   width: 100%;
 }
 
+/* BADGE STYLING */
 .timeline-tag {
   font-family: "Inter", var(--font-base);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   color: #6366f1;
-  background: rgba(99, 102, 241, 0.09);
-  padding: 3px 10px;
-  border-radius: 6px;
+  background: rgba(99, 102, 241, 0.07);
+  padding: 0 8px;
+  border-radius: 4px;
   white-space: nowrap;
   margin-bottom: 6px;
-  border: 1px solid rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.14);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 20px;
+  height: 18px;
   box-sizing: border-box;
-  transition: border-color 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease;
+  text-transform: uppercase;
+  transition:
+    border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .timeline-col--exp1 .timeline-tag {
   color: #7c3aed;
-  background: rgba(124, 58, 237, 0.09);
-  border-color: rgba(124, 58, 237, 0.18);
+  background: rgba(124, 58, 237, 0.07);
+  border-color: rgba(124, 58, 237, 0.14);
 }
 
 .timeline-col--exp2 .timeline-tag {
   color: #8b5cf6;
-  background: rgba(139, 92, 246, 0.09);
-  border-color: rgba(139, 92, 246, 0.18);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .timeline-col:hover .timeline-tag {
-    border-color: rgba(99, 102, 241, 0.45);
-    background: rgba(99, 102, 241, 0.15);
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
-  }
-
-  .timeline-col--exp1:hover .timeline-tag {
-    border-color: rgba(124, 58, 237, 0.45);
-    background: rgba(124, 58, 237, 0.15);
-    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
-  }
-
-  .timeline-col--exp2:hover .timeline-tag {
-    border-color: rgba(139, 92, 246, 0.45);
-    background: rgba(139, 92, 246, 0.15);
-    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
-  }
+  background: rgba(139, 92, 246, 0.07);
+  border-color: rgba(139, 92, 246, 0.14);
 }
 
 .timeline-name {
-  font-size: 14.5px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   letter-spacing: -0.015em;
-  color: var(--text-primary, #16161a);
+  color: #1e293b;
   margin: 0 0 2px 0;
   line-height: 1.25;
-  transition: color 0.35s ease;
+  transition: color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.timeline-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+/* TIMELINE POINT MICRO INTERACTION ON HOVER (Card container does NOT move) */
 @media (hover: hover) and (pointer: fine) {
+  .timeline-col:hover .timeline-dot {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.20), 0 0 8px rgba(99, 102, 241, 0.30);
+  }
+
+  .timeline-col--exp1:hover .timeline-dot {
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.20), 0 0 8px rgba(124, 58, 237, 0.30);
+  }
+
+  .timeline-col--exp2:hover .timeline-dot {
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.20), 0 0 8px rgba(139, 92, 246, 0.30);
+  }
+
+  .timeline-col:hover .timeline-tag {
+    border-color: rgba(99, 102, 241, 0.3);
+    background: rgba(99, 102, 241, 0.13);
+  }
+
+  .timeline-col--exp1:hover .timeline-tag {
+    border-color: rgba(124, 58, 237, 0.3);
+    background: rgba(124, 58, 237, 0.13);
+  }
+
+  .timeline-col--exp2:hover .timeline-tag {
+    border-color: rgba(139, 92, 246, 0.3);
+    background: rgba(139, 92, 246, 0.13);
+  }
+
   .timeline-col:hover .timeline-name {
     color: #4f46e5;
   }
 }
 
-.timeline-sub {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--text-secondary, #7a7a7d);
-  line-height: 1.2;
+/* 13. RESPONSIVE BREAKPOINTS */
+@media (max-width: 1024px) {
+  .about-profile {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    padding: 60px var(--page-padding);
+  }
+  .about-profile__title {
+    font-size: clamp(52px, 7vw, 84px);
+  }
+  .about-profile__dock {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 24px;
+    max-width: 640px;
+  }
+  .about-profile__card-career {
+    padding-left: 0;
+    border-left: none;
+    padding-top: 20px;
+    border-top: 1px solid rgba(20, 20, 20, 0.06);
+  }
+}
+
+@media (max-width: 768px) {
+  .about-profile {
+    padding: 48px var(--page-padding-mobile);
+  }
+  .about-profile__title {
+    font-size: clamp(44px, 12vw, 64px);
+  }
+  .about-profile__intro-copy {
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+  .about-profile__tags {
+    margin-bottom: 28px;
+  }
+  .about-profile__dock {
+    padding: 20px 18px;
+    border-radius: 20px;
+  }
+  .about-profile__info-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .timeline-track {
+    display: none;
+  }
+  .about-profile__timeline-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .timeline-col {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+  }
+  .timeline-period {
+    margin-bottom: 0;
+  }
+  .timeline-point {
+    display: none;
+  }
 }
 
 /* Tablet & Mobile Responsive */
