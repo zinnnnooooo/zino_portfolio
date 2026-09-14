@@ -2608,7 +2608,7 @@ main {
   clip-path: inset(-30px 0 -30px 0);
   width: 100%;
   padding: 14px 0;
-  cursor: default;
+  cursor: none;
   pointer-events: inherit;
   z-index: 1;
 }
@@ -2633,20 +2633,18 @@ main {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding-right: 14px;
-  overflow: visible;
 }
 
 .tools-marquee--row-1 .tools-marquee__track {
-  animation: toolsMarqueeLeft 34s linear infinite;
+  animation: toolsMarqueeLeft 40s linear infinite;
 }
 
 .tools-marquee--row-2 .tools-marquee__track {
-  animation: toolsMarqueeRight 38s linear infinite;
+  animation: toolsMarqueeRight 42s linear infinite;
 }
 
 .tools-marquee--row-3 .tools-marquee__track {
-  animation: toolsMarqueeLeft 35s linear infinite;
+  animation: toolsMarqueeLeft 44s linear infinite;
 }
 
 @keyframes toolsMarqueeLeft {
@@ -2685,7 +2683,7 @@ main {
   flex-shrink: 0;
   white-space: nowrap;
   user-select: none;
-  cursor: default;
+  cursor: none;
   pointer-events: inherit;
   position: relative;
   z-index: 1;
@@ -3323,7 +3321,14 @@ body.cursor-enabled .work-card__link,
 body.cursor-enabled .notify-card,
 body.cursor-enabled .project-archive__item,
 body.cursor-enabled .project-archive__btn,
-body.cursor-enabled .marketing-menu__item {
+body.cursor-enabled .marketing-menu__item,
+body.cursor-enabled .tools,
+body.cursor-enabled .tools *,
+body.cursor-enabled .tools__marquee-wrapper,
+body.cursor-enabled .tools-marquee,
+body.cursor-enabled .tools-marquee *,
+body.cursor-enabled .tools-item,
+body.cursor-enabled .tools-item * {
   cursor: none !important;
 }
 
