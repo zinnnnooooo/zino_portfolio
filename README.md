@@ -121,7 +121,7 @@ DEPLOY
 ## 📱 Preview
 
 <p align="center">
-  <img src="./docs/screenshots/portfolio-preview.png" width="85%" alt="Jinho Park Portfolio Preview">
+  <img src="./docs/screenshots/home.png" width="100%" alt="Jinho Park Portfolio Preview">
 </p>
 
 ---
