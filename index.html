@@ -28,6 +28,143 @@
     <div class="ambient-orb ambient-orb--work"></div>
   </div>
 
+  <!-- GLOBAL SECTION NAVIGATION (COMPACT FLOATING GLASS NAV) -->
+  <nav id="global-section-nav" class="global-nav" aria-label="Global Navigation">
+    <div class="global-nav__container">
+      <ul class="global-nav__list" role="menubar">
+
+        <!-- 00. HERO -->
+        <li class="global-nav__item" role="none">
+          <button type="button" class="global-nav__link" data-target="hero" role="menuitem">
+            <span class="global-nav__indicator" aria-hidden="true"></span>
+            <span class="global-nav__text">HERO</span>
+          </button>
+        </li>
+
+        <!-- 01. PROFILE -->
+        <li class="global-nav__item global-nav__item--has-dropdown" role="none">
+          <button type="button" class="global-nav__link" data-target="profile" aria-haspopup="true"
+            aria-expanded="false" role="menuitem">
+            <span class="global-nav__indicator" aria-hidden="true"></span>
+            <span class="global-nav__text">PROFILE</span>
+          </button>
+          <div class="global-nav__dropdown" role="menu" aria-label="PROFILE sub-menu">
+            <div class="global-nav__dropdown-bridge" aria-hidden="true"></div>
+            <div class="global-nav__dropdown-panel">
+              <a href="#profileIntro" class="global-nav__dropdown-item" data-target="profileIntro" data-nav-target="profileIntro" role="menuitem">
+                <span class="dropdown-item__num">01</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">INTRODUCTION</span>
+                  <span class="dropdown-item__desc">첫 번째 자기소개 / 마케터 소개</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+              <div class="global-nav__dropdown-divider" aria-hidden="true"></div>
+              <a href="#profileAbout" class="global-nav__dropdown-item" data-target="profileAbout" data-nav-target="profileAbout" role="menuitem">
+                <span class="dropdown-item__num">02</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">ABOUT ME</span>
+                  <span class="dropdown-item__desc">저를 소개합니다</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </li>
+
+        <!-- 02. EXPERTISE -->
+        <li class="global-nav__item global-nav__item--has-dropdown" role="none">
+          <button type="button" class="global-nav__link" data-target="expertise" aria-haspopup="true"
+            aria-expanded="false" role="menuitem">
+            <span class="global-nav__indicator" aria-hidden="true"></span>
+            <span class="global-nav__text">EXPERTISE</span>
+          </button>
+          <div class="global-nav__dropdown" role="menu" aria-label="EXPERTISE sub-menu">
+            <div class="global-nav__dropdown-bridge" aria-hidden="true"></div>
+            <div class="global-nav__dropdown-panel">
+              <a href="#expertiseClient" class="global-nav__dropdown-item" data-target="expertiseClient" data-nav-target="expertiseClient" role="menuitem">
+                <span class="dropdown-item__num">01</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">CLIENT EXPERIENCE</span>
+                  <span class="dropdown-item__desc">다양한 클라이언트</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+              <div class="global-nav__dropdown-divider" aria-hidden="true"></div>
+              <a href="#expertiseSns" class="global-nav__dropdown-item" data-target="expertiseSns" data-nav-target="expertiseSns" role="menuitem">
+                <span class="dropdown-item__num">02</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">PERSONAL SNS</span>
+                  <span class="dropdown-item__desc">퍼스널 SNS 채널 운영</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+              <div class="global-nav__dropdown-divider" aria-hidden="true"></div>
+              <a href="#expertiseTools" class="global-nav__dropdown-item" data-target="expertiseTools" data-nav-target="expertiseTools" role="menuitem">
+                <span class="dropdown-item__num">03</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">TOOLS &amp; WORKFLOW</span>
+                  <span class="dropdown-item__desc">아이디어를 도구로 완성합니다</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </li>
+
+        <!-- 03. WORK -->
+        <li class="global-nav__item global-nav__item--has-dropdown" role="none">
+          <button type="button" class="global-nav__link" data-target="work" aria-haspopup="true"
+            aria-expanded="false" role="menuitem">
+            <span class="global-nav__indicator" aria-hidden="true"></span>
+            <span class="global-nav__text">WORK</span>
+          </button>
+          <div class="global-nav__dropdown" role="menu" aria-label="WORK sub-menu">
+            <div class="global-nav__dropdown-bridge" aria-hidden="true"></div>
+            <div class="global-nav__dropdown-panel">
+              <a href="#workMarketing" class="global-nav__dropdown-item" data-target="workActive" data-nav-target="workActive" data-popup="marketing" role="menuitem">
+                <span class="dropdown-item__num">01</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">MARKETING</span>
+                  <span class="dropdown-item__desc">마케팅 실무</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+              <div class="global-nav__dropdown-divider" aria-hidden="true"></div>
+              <a href="#workContent" class="global-nav__dropdown-item" data-target="workActive" data-nav-target="workActive" data-popup="content" role="menuitem">
+                <span class="dropdown-item__num">02</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">CONTENT</span>
+                  <span class="dropdown-item__desc">개인 채널 운영</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+              <div class="global-nav__dropdown-divider" aria-hidden="true"></div>
+              <a href="#workProject" class="global-nav__dropdown-item" data-target="workActive" data-nav-target="workActive" data-popup="project" role="menuitem">
+                <span class="dropdown-item__num">03</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">AI &amp; BUILD</span>
+                  <span class="dropdown-item__desc">바이브 코딩</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+              <div class="global-nav__dropdown-divider" aria-hidden="true"></div>
+              <a href="#workAbout" class="global-nav__dropdown-item" data-target="workActive" data-nav-target="workActive" data-popup="about" role="menuitem">
+                <span class="dropdown-item__num">04</span>
+                <div class="dropdown-item__content">
+                  <span class="dropdown-item__title">ABOUT</span>
+                  <span class="dropdown-item__desc">어바웃</span>
+                </div>
+                <span class="dropdown-item__arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+
   <main id="top">
 
     <!-- HERO & NOTIFICATION CROSS-FADE STAGE -->

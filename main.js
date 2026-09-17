@@ -153,6 +153,289 @@
   window.createGradualBlur = createGradualBlur;
 
   /* ------------------------------------------------------------------
+     3.5 Global Section Navigation Engine (GSAP Master Scroll Sync)
+  ------------------------------------------------------------------ */
+  /* ------------------------------------------------------------------
+     3.5 Global Section Navigation Engine (GSAP Master Scroll Sync)
+  ------------------------------------------------------------------ */
+  function initGlobalSectionNav(masterTimeline) {
+    const globalNav = document.querySelector("#global-section-nav");
+    if (!globalNav) return null;
+
+    const navLinks = globalNav.querySelectorAll(".global-nav__link");
+    const dropdownItems = globalNav.querySelectorAll(".global-nav__dropdown-item");
+    const dropdownContainers = globalNav.querySelectorAll(".global-nav__dropdown");
+
+    const categoryMap = {
+      hero: "hero",
+      profile: "profileIntro",
+      expertise: "expertiseClient",
+      work: "workActive"
+    };
+
+    function getLabelProgress(labelName) {
+      if (!masterTimeline || !masterTimeline.labels) return 0;
+      const labelTime = masterTimeline.labels[labelName];
+      if (typeof labelTime !== "number") return 0;
+      const duration = masterTimeline.duration();
+      return duration > 0 ? labelTime / duration : 0;
+    }
+
+    function getScrollForLabel(labelName) {
+      if (!masterTimeline || !masterTimeline.scrollTrigger) return 0;
+      const st = masterTimeline.scrollTrigger;
+      const progress = getLabelProgress(labelName);
+      return st.start + (st.end - st.start) * progress;
+    }
+
+    function navigateToLabel(labelName, duration = 0.4, onComplete) {
+      if (!masterTimeline || !masterTimeline.scrollTrigger) return;
+
+      const targetY = getScrollForLabel(labelName);
+
+      if (typeof gsap !== "undefined") {
+        gsap.killTweensOf(window);
+        gsap.killTweensOf(document.documentElement);
+      }
+
+      const obj = { y: window.scrollY };
+      gsap.to(obj, {
+        y: targetY,
+        duration: duration,
+        ease: "power3.out",
+        onUpdate: () => {
+          window.scrollTo(0, obj.y);
+          if (typeof ScrollTrigger !== "undefined") {
+            ScrollTrigger.update();
+          }
+        },
+        onComplete: () => {
+          window.scrollTo(0, targetY);
+          if (typeof ScrollTrigger !== "undefined") {
+            ScrollTrigger.update();
+          }
+          closeAllDropdowns();
+          if (typeof onComplete === "function") {
+            onComplete();
+          }
+        }
+      });
+    }
+
+    function triggerWorkPopup(popupType) {
+      if (!popupType) return;
+      const modalMap = {
+        marketing: { link: ".work-card--01 .work-card__link", modal: "#marketing-menu-modal" },
+        content: { link: ".work-card--02 .work-card__link", modal: "#content-archive-modal" },
+        project: { link: ".work-card--03 .work-card__link", modal: "#project-archive-modal" },
+        about: { link: ".work-card--04 .work-card__link", modal: "#about-connect-modal" }
+      };
+      const item = modalMap[popupType];
+      if (!item) return;
+      const linkEl = document.querySelector(item.link);
+      if (linkEl) {
+        linkEl.click();
+      } else {
+        const modalEl = document.querySelector(item.modal);
+        if (modalEl && typeof modalEl.openModal === "function") {
+          modalEl.openModal();
+        }
+      }
+    }
+
+    function closeAllDropdowns() {
+      dropdownContainers.forEach((dd) => {
+        dd.classList.remove("is-open");
+      });
+      navLinks.forEach((link) => {
+        link.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    // Desktop Hover Listeners
+    globalNav.querySelectorAll(".global-nav__item").forEach((item) => {
+      const dd = item.querySelector(".global-nav__dropdown");
+      const link = item.querySelector(".global-nav__link");
+
+      item.addEventListener("mouseenter", () => {
+        const isTouch = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 768;
+        if (!isTouch) {
+          closeAllDropdowns();
+          if (dd) {
+            dd.classList.add("is-open");
+            if (link) link.setAttribute("aria-expanded", "true");
+          }
+        }
+      });
+
+      if (dd) {
+        item.addEventListener("mouseleave", () => {
+          const isTouch = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 768;
+          if (!isTouch) {
+            dd.classList.remove("is-open");
+            if (link) link.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+    });
+
+    // Main Category Click Listeners
+    navLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const targetCategory = link.dataset.target;
+        const parentItem = link.closest(".global-nav__item");
+        const dropdown = parentItem ? parentItem.querySelector(".global-nav__dropdown") : null;
+        
+        const isTouch = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 768;
+
+        if (isTouch && dropdown) {
+          const isOpen = dropdown.classList.contains("is-open");
+          closeAllDropdowns();
+          if (!isOpen) {
+            dropdown.classList.add("is-open");
+            link.setAttribute("aria-expanded", "true");
+            return;
+          }
+        }
+
+        const targetLabel = categoryMap[targetCategory] || "hero";
+        navigateToLabel(targetLabel);
+      });
+    });
+
+    let pendingPopupTimer = null;
+    let pendingReactionTimer = null;
+
+    // Dropdown Item Click Listeners
+    dropdownItems.forEach((item) => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (pendingPopupTimer) {
+          clearTimeout(pendingPopupTimer);
+          pendingPopupTimer = null;
+        }
+        if (pendingReactionTimer) {
+          clearTimeout(pendingReactionTimer);
+          pendingReactionTimer = null;
+        }
+        document.querySelectorAll(".work-card__link.is-nav-selected").forEach((el) => {
+          el.classList.remove("is-nav-selected");
+        });
+
+        const targetLabel = item.dataset.target || item.dataset.navTarget || "hero";
+        const popupType = item.dataset.popup;
+
+        closeAllDropdowns();
+
+        if (popupType) {
+          navigateToLabel(targetLabel, 0.4, () => {
+            // Step 1: 100% arrived at WORK scene & scroll stopped.
+            // Step 2: Natural pause (300ms) for user to perceive arrival.
+            pendingReactionTimer = setTimeout(() => {
+              pendingReactionTimer = null;
+
+              // Step 3: Card visual selection feedback
+              const modalMap = {
+                marketing: ".work-card--01 .work-card__link",
+                content: ".work-card--02 .work-card__link",
+                project: ".work-card--03 .work-card__link",
+                about: ".work-card--04 .work-card__link"
+              };
+              const cardSelector = modalMap[popupType];
+              const cardLink = cardSelector ? document.querySelector(cardSelector) : null;
+
+              if (cardLink) {
+                cardLink.classList.add("is-nav-selected");
+              }
+
+              // Step 4: Keep card reaction for 200ms, then trigger popup
+              pendingPopupTimer = setTimeout(() => {
+                pendingPopupTimer = null;
+                if (cardLink) {
+                  cardLink.classList.remove("is-nav-selected");
+                }
+                triggerWorkPopup(popupType);
+              }, 200);
+
+            }, 300);
+          });
+        } else {
+          navigateToLabel(targetLabel, 0.4);
+        }
+      });
+    });
+
+    // Close dropdown on click outside
+    document.addEventListener("click", (e) => {
+      if (!globalNav.contains(e.target)) {
+        closeAllDropdowns();
+      }
+    });
+
+    // ESC key accessibility
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeAllDropdowns();
+      }
+    });
+
+    // Function to update active category highlight & hero state (Called inside masterTimeline.onUpdate)
+    function syncNavState() {
+      if (!masterTimeline || !masterTimeline.scrollTrigger) return;
+      const st = masterTimeline.scrollTrigger;
+      const progress = st.progress;
+      const currentLabel = masterTimeline.currentLabel();
+
+      // Theme toggle for Hero
+      if (currentLabel === "hero" || progress < 0.05) {
+        globalNav.classList.add("global-nav--hero");
+      } else {
+        globalNav.classList.remove("global-nav--hero");
+      }
+
+      // Active category determination
+      let activeCategory = "";
+
+      if (currentLabel === "hero" || progress < 0.05) {
+        activeCategory = "hero";
+      } else if (["notification", "profileIntro", "selfIntro", "aboutProfile", "profileAbout"].includes(currentLabel)) {
+        activeCategory = "profile";
+      } else if (["intro", "expertiseClient", "personalSns", "expertiseSns", "tools", "expertiseTools"].includes(currentLabel)) {
+        activeCategory = "expertise";
+      } else if (["work", "workActive", "release"].includes(currentLabel)) {
+        activeCategory = "work";
+      } else {
+        if (progress < 0.05) {
+          activeCategory = "hero";
+        } else if (progress >= 0.05 && progress < 0.42) {
+          activeCategory = "profile";
+        } else if (progress >= 0.42 && progress < 0.76) {
+          activeCategory = "expertise";
+        } else if (progress >= 0.76) {
+          activeCategory = "work";
+        }
+      }
+
+      navLinks.forEach((link) => {
+        if (link.dataset.target === activeCategory) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.classList.remove("is-active");
+          link.removeAttribute("aria-current");
+        }
+      });
+    }
+
+    syncNavState();
+    return { syncNavState, navigateToLabel };
+  }
+
+  /* ------------------------------------------------------------------
      4. Scroll-Driven Master Cross-Fade Experience (GSAP + ScrollTrigger)
   ------------------------------------------------------------------ */
   function initNotifyExperience() {
@@ -239,10 +522,18 @@
     };
 
     function activateScene(activeName) {
+      let sceneKey = activeName;
+      if (activeName === "profileIntro") sceneKey = "notification";
+      if (activeName === "profileAbout") sceneKey = "aboutProfile";
+      if (activeName === "expertiseClient") sceneKey = "intro";
+      if (activeName === "expertiseSns") sceneKey = "personalSns";
+      if (activeName === "expertiseTools") sceneKey = "tools";
+      if (activeName === "workActive") sceneKey = "work";
+
       Object.keys(scenes).forEach((key) => {
         const sec = scenes[key];
         if (sec) {
-          const isActive = key === activeName;
+          const isActive = key === sceneKey;
           sec.style.pointerEvents = isActive ? "auto" : "none";
           sec.style.zIndex = isActive ? (key === "work" ? "30" : "10") : "2";
 
@@ -491,6 +782,8 @@
         filter: "blur(4px)",
       });
 
+      let globalNavController = null;
+
       // Master Timeline (Exactly 1 ScrollTrigger)
       const masterTimeline = gsap.timeline({
         scrollTrigger: {
@@ -504,7 +797,7 @@
           invalidateOnRefresh: true,
           onUpdate: () => {
             const label = masterTimeline.currentLabel();
-            if (label && scenes[label]) {
+            if (label && (scenes[label] || label.startsWith("profile") || label.startsWith("expertise") || label.startsWith("work"))) {
               activateScene(label);
               setIndicatorTheme(label === "hero" ? "hero" : "dark");
             } else if (label === "release") {
@@ -513,9 +806,14 @@
             }
 
             syncPersonalSnsInteraction();
+            if (globalNavController) {
+              globalNavController.syncNavState();
+            }
           },
         },
       });
+
+      globalNavController = initGlobalSectionNav(masterTimeline);
 
       // [LABEL 1: HERO - CLEAN ORIGINAL VIDEO EXPERIENCE]
       masterTimeline
@@ -539,6 +837,7 @@
         .to(inner, { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.inOut" }, "<")
         .to(cards[0], { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }, "-=0.8")
         .to(sparkleBg, { opacity: 1, "--sparkle-color-main": "#5F8CFF", "--sparkle-color-sec": "#86C8FF", "--glow-color": "rgba(110, 160, 255, 0.04)", "--aurora-color": "rgba(110, 160, 255, 0.08)", "--aurora-color-2": "rgba(150, 195, 255, 0.055)", "--aurora-pos-1": "18% 22%", "--aurora-pos-2": "75% 70%", duration: 0.8 }, "<")
+        .addLabel("profileIntro")
         .to({}, { duration: 0.5 })
 
         // 02 PROJECT
@@ -628,6 +927,7 @@
         .to(aboutJourneySection, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, "-=0.3")
         .to(aboutTimelineTrackFill, { scaleX: 1, duration: 0.5, ease: "power2.out" }, "-=0.25")
         .to(aboutTimelineCols, { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.14, ease: "power3.out" }, "-=0.2")
+        .addLabel("profileAbout")
         .to({}, { duration: 0.9 });
 
       // [LABEL 4: INTRO / WORKED WITH - PALE AQUA / LIGHT MINT TINT]
@@ -641,6 +941,7 @@
         .to(aboutProfileSection, { opacity: 0, scale: 0.985, duration: 1.1, ease: "power2.inOut" })
         .to(introSection, { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: "power2.inOut" }, "<")
         .to(sparkleBg, { "--sparkle-color-main": "#36CFC2", "--sparkle-color-sec": "#72E0C2", "--glow-color": "rgba(45, 200, 185, 0.038)", "--aurora-color": "rgba(45, 200, 185, 0.075)", "--aurora-color-2": "rgba(100, 220, 190, 0.05)", "--aurora-pos-1": "82% 35%", "--aurora-pos-2": "25% 75%", duration: 0.35, ease: "power2.out" }, "<")
+        .addLabel("expertiseClient")
         .to({}, { duration: 0.8 });
 
       // [LABEL 4.5: PERSONAL SNS - SOFT ICE BLUE / PINK / LAVENDER LIGHT TINT]
@@ -660,6 +961,7 @@
         .to(personalCards[0], { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, "-=0.3")
         .to(personalCards[1], { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, "-=0.4")
         .to(personalCards[2], { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, "-=0.4")
+        .addLabel("expertiseSns")
         .to({}, { duration: 1.6 });
 
       // [LABEL 5: TOOLS & WORKFLOW - PALE LAVENDER / SOFT PINK TINT]
@@ -681,6 +983,7 @@
         .to(toolsRow1, { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 1.0, ease: "power2.out" })
         .to(toolsRow2, { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 1.0, ease: "power2.out" }, "-=0.5")
         .to(toolsRow3, { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 1.0, ease: "power2.out" }, "-=0.5")
+        .addLabel("expertiseTools")
         .to({}, { duration: 0.8 });
 
       // [LABEL 6: WORK - WARM IVORY / SOFT GOLD LIGHT TINT]
@@ -702,6 +1005,7 @@
         .to(workCard2, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, "-=0.1")
         .to(workCard3, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, "-=0.1")
         .to(workCard4, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, "-=0.1")
+        .addLabel("workActive")
         .to({}, { duration: 1.0 });
 
       // [LABEL 7: RELEASE - FOOTER SOFT NEUTRAL TRANSITION]

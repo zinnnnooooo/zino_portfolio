@@ -3026,6 +3026,28 @@ main {
     inset 1px 0 0 rgba(255, 255, 255, 0.75);
 }
 
+.work-card__link.is-nav-selected {
+  --lift: -6px;
+  --scale: 1.02;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.72) 0%,
+    rgba(255, 255, 255, 0.42) 48%,
+    rgba(255, 255, 255, 0.62) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 24px 60px rgba(120, 150, 255, 0.18),
+    0 34px 85px rgba(180, 150, 255, 0.14),
+    inset 0 1px 0 #ffffff,
+    inset 1px 0 0 rgba(255, 255, 255, 0.75);
+}
+
+.work-card__link.is-nav-selected::before,
+.work-card__link.is-nav-selected::after {
+  opacity: 1;
+}
+
 .work-card__bg {
   position: absolute;
   inset: 0;
@@ -4717,6 +4739,396 @@ body.cursor-enabled .starlight-cursor {
   cursor: pointer;
   pointer-events: auto !important;
 }
+
+/* ==========================================================================
+   GLOBAL SECTION NAVIGATION (COMPACT FLOATING GLASS UI)
+   ========================================================================== */
+.global-nav {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9000;
+  width: min(700px, calc(100vw - 32px));
+  height: 52px;
+  border-radius: 999px;
+  background: linear-gradient(
+    110deg,
+    rgba(225, 235, 248, 0.24),
+    rgba(235, 242, 255, 0.12) 45%,
+    rgba(215, 228, 250, 0.18)
+  );
+  backdrop-filter: blur(16px) saturate(145%) brightness(1.06);
+  -webkit-backdrop-filter: blur(16px) saturate(145%) brightness(1.06);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 30px rgba(35, 50, 80, 0.10);
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, width 0.35s ease;
+  isolation: isolate;
+}
+
+/* Glass Edge Refraction & Highlight Layer */
+.global-nav::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.40) 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(120, 150, 200, 0.08) 100%
+  );
+  z-index: 1;
+}
+
+/* Enhanced contrast over Hero Video background */
+.global-nav.global-nav--hero {
+  background: linear-gradient(
+    110deg,
+    rgba(230, 238, 250, 0.28),
+    rgba(240, 245, 255, 0.15) 45%,
+    rgba(218, 230, 250, 0.22)
+  );
+  backdrop-filter: blur(16px) saturate(150%) brightness(1.06);
+  -webkit-backdrop-filter: blur(16px) saturate(150%) brightness(1.06);
+  border-color: rgba(255, 255, 255, 0.78);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.20),
+    0 12px 35px rgba(25, 35, 60, 0.12);
+}
+
+.global-nav__container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.global-nav__list {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.global-nav__item {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.global-nav__link {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: 'Inter', 'Pretendard', sans-serif;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: #0f172a;
+  letter-spacing: 0.055em;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
+  outline: none;
+}
+
+.global-nav__link:hover:not(.is-active) {
+  color: #020617;
+  opacity: 0.75;
+  background: transparent;
+  border-color: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+.global-nav__link:focus-visible {
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4);
+}
+
+/* Active State Indicator Dot & Pure Text Highlight (No Active Capsule Box) */
+.global-nav__indicator {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4f46e5;
+  box-shadow: 0 0 6px rgba(79, 70, 229, 0.6);
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.global-nav__link.is-active {
+  color: #4f46e5;
+  font-weight: 700;
+  background: transparent;
+  border: 1px solid transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.global-nav__link.is-active .global-nav__indicator {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Dropdown Menu Layer */
+.global-nav__dropdown {
+  position: absolute;
+  top: calc(100% + 20px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px) scale(0.98);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 9005;
+  transition:
+    opacity 200ms ease,
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s 240ms;
+}
+
+/* Hover & Active Toggle for Dropdown */
+@media (hover: hover) and (pointer: fine) {
+  .global-nav__item--has-dropdown:hover .global-nav__dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0) scale(1);
+    transition:
+      opacity 200ms ease,
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s;
+  }
+}
+
+.global-nav__dropdown.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0) scale(1);
+  transition:
+    opacity 200ms ease,
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+}
+
+/* Dropdown Invisible Hit Area Bridge (Bridging 20px gap) */
+.global-nav__dropdown-bridge {
+  position: absolute;
+  top: -25px;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: transparent;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Dropdown Panel Glass Styling (Translucent Cool Frosted Glass Material with Heavy 60px Blur) */
+.global-nav__dropdown-panel {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(225, 235, 248, 0.46) 0%,
+    rgba(205, 220, 240, 0.36) 55%,
+    rgba(190, 210, 235, 0.40) 100%
+  );
+  backdrop-filter: blur(60px) saturate(150%) brightness(1.05);
+  -webkit-backdrop-filter: blur(60px) saturate(150%) brightness(1.05);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    inset 0 -1px 0 rgba(120, 145, 180, 0.12),
+    0 18px 42px rgba(25, 40, 65, 0.14);
+  border-radius: 20px;
+  padding: 8px;
+  min-width: 265px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Internal Surface Refraction Sheen & Soft Highlight Layer for Dropdown Panel */
+.global-nav__dropdown-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.20) 0%,
+    rgba(255, 255, 255, 0.04) 40%,
+    rgba(150, 180, 220, 0.05) 100%
+  );
+  z-index: 1;
+}
+
+/* Dropdown Item Row */
+.global-nav__dropdown-item {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background-color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.global-nav__dropdown-item:hover,
+.global-nav__dropdown-item:focus-visible {
+  background-color: rgba(255, 255, 255, 0.28);
+  transform: translateX(4px);
+}
+
+.dropdown-item__num {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4f46e5;
+  opacity: 1;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.dropdown-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.dropdown-item__title {
+  font-family: 'Inter', 'Pretendard', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(18, 28, 44, 0.94);
+  letter-spacing: 0.03em;
+  transition: color 0.25s ease;
+}
+
+.global-nav__dropdown-item:hover .dropdown-item__title {
+  color: #4f46e5;
+}
+
+.dropdown-item__desc {
+  font-family: 'Inter', 'Pretendard', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(50, 65, 85, 0.76);
+  letter-spacing: -0.01em;
+}
+
+.dropdown-item__arrow {
+  font-size: 13px;
+  color: rgba(30, 45, 65, 0.70);
+  margin-left: auto;
+  padding-left: 10px;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.global-nav__dropdown-item:hover .dropdown-item__arrow {
+  color: #4f46e5;
+  transform: translate(2px, -2px);
+}
+
+.global-nav__dropdown-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.28);
+  margin: 3px 6px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Mobile Responsiveness for Global Navigation */
+@media (max-width: 768px) {
+  .global-nav {
+    top: 14px;
+    height: 46px;
+    border-radius: 999px;
+    padding: 3px 5px;
+    width: calc(100vw - 32px);
+    max-width: 360px;
+  }
+
+  .global-nav__list {
+    gap: 2px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .global-nav__link {
+    padding: 7px 12px;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    gap: 4px;
+  }
+
+  .global-nav__indicator {
+    width: 4px;
+    height: 4px;
+  }
+
+  .global-nav__dropdown {
+    top: calc(100% + 8px);
+  }
+
+  .global-nav__dropdown-panel {
+    min-width: 220px;
+    border-radius: 16px;
+    padding: 6px;
+  }
+
+  .global-nav__dropdown-item {
+    padding: 8px 10px;
+  }
+
+  .dropdown-item__num {
+    font-size: 10px;
+    margin-right: 8px;
+  }
+
+  .dropdown-item__title {
+    font-size: 11px;
+  }
+
+  .dropdown-item__desc {
+    font-size: 10px;
+  }
+}
+
 
 
 
