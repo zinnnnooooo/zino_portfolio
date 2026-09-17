@@ -4953,22 +4953,20 @@ body.cursor-enabled .starlight-cursor {
   z-index: 1;
 }
 
-/* Dropdown Panel Glass Styling (Translucent Cool Frosted Glass Material with Heavy 60px Blur) */
+/* Dropdown Panel Glass Styling (Readability-Focused Translucent Glass Material) */
 .global-nav__dropdown-panel {
   position: relative;
   background: linear-gradient(
     135deg,
-    rgba(225, 235, 248, 0.46) 0%,
-    rgba(205, 220, 240, 0.36) 55%,
-    rgba(190, 210, 235, 0.40) 100%
+    rgba(242, 247, 255, 0.78),
+    rgba(222, 232, 246, 0.72)
   );
-  backdrop-filter: blur(60px) saturate(150%) brightness(1.05);
-  -webkit-backdrop-filter: blur(60px) saturate(150%) brightness(1.05);
-  border: 1px solid rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(40px) saturate(130%);
+  -webkit-backdrop-filter: blur(40px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.90);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.82),
-    inset 0 -1px 0 rgba(120, 145, 180, 0.12),
-    0 18px 42px rgba(25, 40, 65, 0.14);
+    inset 0 1px 0 rgba(255, 255, 255, 0.90),
+    0 12px 35px rgba(40, 55, 80, 0.10);
   border-radius: 20px;
   padding: 8px;
   min-width: 265px;
@@ -4987,8 +4985,8 @@ body.cursor-enabled .starlight-cursor {
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.20) 0%,
-    rgba(255, 255, 255, 0.04) 40%,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.08) 40%,
     rgba(150, 180, 220, 0.05) 100%
   );
   z-index: 1;
@@ -5009,7 +5007,7 @@ body.cursor-enabled .starlight-cursor {
 
 .global-nav__dropdown-item:hover,
 .global-nav__dropdown-item:focus-visible {
-  background-color: rgba(255, 255, 255, 0.28);
+  background-color: rgba(255, 255, 255, 0.45);
   transform: translateX(4px);
 }
 
@@ -5033,8 +5031,8 @@ body.cursor-enabled .starlight-cursor {
 .dropdown-item__title {
   font-family: 'Inter', 'Pretendard', sans-serif;
   font-size: 12px;
-  font-weight: 600;
-  color: rgba(18, 28, 44, 0.94);
+  font-weight: 650;
+  color: #182033;
   letter-spacing: 0.03em;
   transition: color 0.25s ease;
 }
@@ -5047,13 +5045,13 @@ body.cursor-enabled .starlight-cursor {
   font-family: 'Inter', 'Pretendard', sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: rgba(50, 65, 85, 0.76);
+  color: rgba(24, 32, 51, 0.68);
   letter-spacing: -0.01em;
 }
 
 .dropdown-item__arrow {
   font-size: 13px;
-  color: rgba(30, 45, 65, 0.70);
+  color: rgba(24, 32, 51, 0.70);
   margin-left: auto;
   padding-left: 10px;
   transition: transform 0.25s ease, color 0.25s ease;
@@ -5066,7 +5064,7 @@ body.cursor-enabled .starlight-cursor {
 
 .global-nav__dropdown-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(50, 65, 90, 0.12);
   margin: 3px 6px;
   position: relative;
   z-index: 2;
